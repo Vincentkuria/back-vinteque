@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: vinteque
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/vintequedb
+    username: postgres
+    password: mysecretpassword
