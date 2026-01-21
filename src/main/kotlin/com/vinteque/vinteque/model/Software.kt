@@ -12,7 +12,7 @@ data class Software(
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: UUID? = null,
 
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     var status: String? = "draft",
 
     @Column(name = "company_name", nullable = false, length = 150)

@@ -4,7 +4,7 @@ import com.vinteque.vinteque.model.Brand
 import org.springframework.web.multipart.MultipartFile
 
 data class BrandRequestDto (
-    var status: String?,
+    var status: String?="draft",
 
     var displayImg: MultipartFile? = null,
 

@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.multipart.MultipartFile
 
 data class BlogRequestDto (
-    var status: String?,
+    var status: String?="draft",
 
     var title: String,
 

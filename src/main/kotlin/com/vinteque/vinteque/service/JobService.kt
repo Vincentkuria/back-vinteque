@@ -1,5 +1,6 @@
 package com.vinteque.vinteque.service
 
+import com.vinteque.vinteque.dto.JobUpdateRequestDto
 import com.vinteque.vinteque.model.Job
 import com.vinteque.vinteque.repository.JobRepository
 import org.springframework.data.domain.Page
@@ -62,14 +63,16 @@ class JobService(
     }
 
     @Transactional
-    fun updateJob(id: UUID, updatedJob: Job): Job {
-        val job = getJobById(id)
-        job.status = updatedJob.status
-        job.location = updatedJob.location
-        job.type = updatedJob.type
-        job.department = updatedJob.department
-        job.body = updatedJob.body
-        job.deadline = updatedJob.deadline
+    fun updateJob(jobUpdateRequestDto: JobUpdateRequestDto): Job {
+        val job = getJobById(jobUpdateRequestDto.id)
+        jobUpdateRequestDto.let { updatedJob ->
+            updatedJob.status?.let { if (it.isNotBlank()) job.status = it }
+            updatedJob.location?.let { if (it.isNotBlank()) job.location = it }
+            updatedJob.type?.let { if (it.isNotBlank()) job.type = it }
+            updatedJob.department?.let { if (it.isNotBlank()) job.department = it }
+            updatedJob.body?.let { if (it.isNotBlank()) job.body = it }
+            updatedJob.deadline?.let { job.deadline = it }
+        }
         return jobRepository.save(job)
     }
 

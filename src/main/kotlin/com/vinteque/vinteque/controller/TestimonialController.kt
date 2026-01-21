@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/testimonials")
+@RequestMapping("/testimonials")
 class TestimonialController(
     private val testimonialService: TestimonialService
 ) {

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 import java.util.UUID
 
 @RestController
-@RequestMapping("/api/applicants")
+@RequestMapping("/applicants")
 class ApplicantController(
     private val applicantService: ApplicantService,
     private val uploadingService: ResourceService
@@ -67,7 +67,7 @@ class ApplicantController(
     fun createApplicant(
         @PathVariable jobId: UUID,
         @ModelAttribute applicantRequestDto: ApplicantRequestDto
-    ): ResponseEntity<out Any?>? {
+    ): ResponseEntity<Any> {
         if (applicantRequestDto.resume.isEmpty){
             return ResponseEntity.badRequest().body(mapOf("message" to "all fields are required"))
         }

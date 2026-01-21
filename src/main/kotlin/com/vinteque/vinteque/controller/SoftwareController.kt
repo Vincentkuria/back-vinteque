@@ -8,12 +8,13 @@ import com.vinteque.vinteque.service.ResourceService
 import com.vinteque.vinteque.service.SoftwareService
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.UUID
 
 @RestController
-@RequestMapping("/api/software")
+@RequestMapping("/software")
 class SoftwareController(
     private val softwareService: SoftwareService,
     private val resourceService: ResourceService
@@ -68,7 +69,7 @@ class SoftwareController(
         return ResponseEntity.ok(software)
     }
 
-    @PostMapping
+    @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun createSoftware(@ModelAttribute softwareRequestDto: SoftwareRequestDto): ResponseEntity<Software> {
         val logoUrl = softwareRequestDto.logo?.let { resourceService.uploadFile(it) }
         val aboutImgUrl= softwareRequestDto.aboutImg?.let { resourceService.uploadFile(it) }

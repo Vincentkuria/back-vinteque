@@ -51,11 +51,24 @@ CREATE TABLE softwares (
     achievements TEXT[],
     mockup_img VARCHAR(500),
     mockup_bg_img VARCHAR(500),
-    software_description TEXT
+    software_description TEXT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Index on status for faster filtering
 CREATE INDEX idx_softwares_status ON softwares(status);
+
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+    RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+CREATE TRIGGER update_softwares_updated_at BEFORE UPDATE ON softwares
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 
 
@@ -73,11 +86,24 @@ CREATE TABLE brands (
     about_client TEXT,
     goal TEXT,
     showcase_imgs TEXT[],
-    showcase_bg_color VARCHAR(7)
+    showcase_bg_color VARCHAR(7),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Index on status for faster filtering
 CREATE INDEX idx_brands_status ON brands(status);
+
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+    RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+CREATE TRIGGER update_brands_updated_at BEFORE UPDATE ON brands
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 
 

@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
+import kotlin.text.isNotBlank
 
 @Service
 class SoftwareService(
@@ -66,24 +67,24 @@ class SoftwareService(
     fun updateSoftware(softwareUpdateRequestDto: SoftwareUpdateRequestDto): Software {
         val software = getSoftwareById(softwareUpdateRequestDto.id)
         softwareUpdateRequestDto.let { dto ->
-            dto.status?.let { software.status = it }
-            dto.companyName?.let { software.companyName = it }
-            dto.location?.let { software.location = it }
-            dto.logo?.let { software.logo= resourceService.uploadFile(it)  }
-            dto.barColor?.let { software.barColor = it }
-            dto.title?.let { software.title = it }
-            dto.aboutClient?.let { software.aboutClient = it }
-            dto.deliverables?.let { software.deliverables = it }
-            dto.aboutImg?.let { software.aboutImg = resourceService.uploadFile(it) }
-            dto.challenge?.let { software.challenge = it }
-            dto.solution?.let { software.solution = it }
-            dto.stack?.let { software.stack = it }
-            dto.showcaseImgs?.let { software.showcaseImgs = it.map { showcaseImg -> resourceService.uploadFile(showcaseImg) } }
-            dto.showcaseBgColor?.let { software.showcaseBgColor = it }
-            dto.achievements?.let { software.achievements = it }
-            dto.mockupImg?.let { software.mockupImg = resourceService.uploadFile(it) }
-            dto.mockupBgImg?.let { software.mockupBgImg = resourceService.uploadFile(it) }
-            dto.softwareDescription?.let { software.softwareDescription = it }
+            dto.status?.let { if(it.isNotBlank()) software.status = it }
+            dto.companyName?.let { if(it.isNotBlank()) software.companyName = it }
+            dto.location?.let { if(it.isNotBlank()) software.location = it }
+            dto.logo?.let { if(!it.isEmpty) software.logo= resourceService.uploadFile(it)  }
+            dto.barColor?.let { if(it.isNotBlank()) software.barColor = it }
+            dto.title?.let { if(it.isNotBlank()) software.title = it }
+            dto.aboutClient?.let { if(it.isNotBlank()) software.aboutClient = it }
+            dto.deliverables?.let { if(it.isNotBlank()) software.deliverables = it }
+            dto.aboutImg?.let { if(!it.isEmpty) software.aboutImg = resourceService.uploadFile(it) }
+            dto.challenge?.let { if(it.isNotBlank()) software.challenge = it }
+            dto.solution?.let { if(it.isNotBlank()) software.solution = it }
+            dto.stack?.let { if(it.isNotBlank()) software.stack = it }
+            dto.showcaseImgs?.let { if(!it.isEmpty()) software.showcaseImgs = it.map { showcaseImg -> resourceService.uploadFile(showcaseImg) } }
+            dto.showcaseBgColor?.let { if(it.isNotBlank()) software.showcaseBgColor = it }
+            dto.achievements?.let { if(!it.isEmpty()) software.achievements = it }
+            dto.mockupImg?.let { if(!it.isEmpty) software.mockupImg = resourceService.uploadFile(it) }
+            dto.mockupBgImg?.let { if(!it.isEmpty) software.mockupBgImg = resourceService.uploadFile(it) }
+            dto.softwareDescription?.let { if(it.isNotBlank()) software.softwareDescription = it }
         }
         return softwareRepository.save(software)
     }

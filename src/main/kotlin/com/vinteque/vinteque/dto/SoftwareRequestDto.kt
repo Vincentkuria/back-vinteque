@@ -4,7 +4,7 @@ import com.vinteque.vinteque.model.Software
 import org.springframework.web.multipart.MultipartFile
 
 data class SoftwareRequestDto(
-    var status: String?,
+    var status: String?="draft",
 
     var companyName: String,
 

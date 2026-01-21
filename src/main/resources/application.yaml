@@ -7,9 +7,22 @@ spring:
     username: postgres
     password: mysecretpassword
 
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 100MB
+
+  flyway:
+    validate-on-migrate: false
+    repair: true
+
+
 server:
   address: 0.0.0.0
   port: 8080
 
   servlet:
     context-path: /api
+
+  tomcat:
+    max-part-count: 100

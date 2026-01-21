@@ -48,15 +48,10 @@ class BlogService(
     fun updateBlog(blogUpdateRequestDto: BlogUpdateRequestDto): Blog {
         val blog=getBlogById(blogUpdateRequestDto.id)
 
-        blogUpdateRequestDto.heroImg?.let {
-            if (!it.isEmpty){
-                blog.heroImg=resourceService.uploadFile(it)
-            }
-        }
-
-        blogUpdateRequestDto.title?.let { blog.title=it }
-        blogUpdateRequestDto.body?.let { blog.body=it }
-        blogUpdateRequestDto.status?.let { blog.status=it }
+        blogUpdateRequestDto.heroImg?.let { if (!it.isEmpty) blog.heroImg=resourceService.uploadFile(it)}
+        blogUpdateRequestDto.title?.let { if(it.isNotBlank()) blog.title=it }
+        blogUpdateRequestDto.body?.let { if(it.isNotBlank()) blog.body=it }
+        blogUpdateRequestDto.status?.let { if(it.isNotBlank()) blog.status=it }
         return blogRepository.save(blog)
     }
 

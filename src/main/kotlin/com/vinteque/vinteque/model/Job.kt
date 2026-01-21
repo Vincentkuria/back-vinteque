@@ -36,7 +36,7 @@ data class Job(
     var updatedAt: LocalDateTime? = LocalDateTime.now(),
 
     @OneToMany(mappedBy = "job", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var applicants: MutableList<Applicant> = mutableListOf()
+    var applicants: MutableList<Applicant>? = mutableListOf()
 ) {
     @PreUpdate
     fun preUpdate() {

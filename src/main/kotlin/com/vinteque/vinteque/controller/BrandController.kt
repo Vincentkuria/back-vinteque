@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 import java.util.UUID
 
 @RestController
-@RequestMapping("/api/brands")
+@RequestMapping("/brands")
 class BrandController(
     private val brandService: BrandService,
     private val resourceService: ResourceService

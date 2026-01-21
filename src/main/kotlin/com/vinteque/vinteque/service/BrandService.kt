@@ -61,17 +61,17 @@ class BrandService(
     fun updateBrand(brandUpdateRequestDto: BrandUpdateRequestDto): Brand {
         val brand = getBrandById(brandUpdateRequestDto.id)
         brandUpdateRequestDto.let {
-            it.status?.let { status ->brand.status = status }
-            it.displayImg?.let { displayImg ->brand.displayImg = resourceService.uploadFile(displayImg)}
-            it.companyName?.let { companyName ->brand.companyName = companyName }
-            it.title?.let { title ->brand.title = title }
-            it.bgColor?.let { bgColor ->brand.bgColor = bgColor }
-            it.location?.let { location ->brand.location = location }
-            it.heroImg?.let { heroImg ->brand.heroImg = resourceService.uploadFile(heroImg)}
-            it.aboutClient?.let { aboutClient ->brand.aboutClient = aboutClient}
-            it.goal?.let { goal ->brand.goal = goal }
-            it.showcaseImgs?.let { showcaseImgs ->showcaseImgs.map { showcaseImg ->resourceService.uploadFile(showcaseImg)}}
-            it.showcaseBgColor?.let { showcaseBgColor ->brand.showcaseBgColor = showcaseBgColor }
+            it.status?.let { status -> if (status.isNotBlank()) brand.status = status }
+            it.displayImg?.let { displayImg -> if (!displayImg.isEmpty)brand.displayImg = resourceService.uploadFile(displayImg)}
+            it.companyName?.let { companyName -> if (companyName.isNotBlank()) brand.companyName = companyName }
+            it.title?.let { title -> if (title.isNotBlank()) brand.title = title }
+            it.bgColor?.let { bgColor -> if (bgColor.isNotBlank()) brand.bgColor = bgColor }
+            it.location?.let { location -> if (location.isNotBlank()) brand.location = location }
+            it.heroImg?.let { heroImg -> if (!heroImg.isEmpty) brand.heroImg = resourceService.uploadFile(heroImg)}
+            it.aboutClient?.let { aboutClient -> if (aboutClient.isNotBlank()) brand.aboutClient = aboutClient}
+            it.goal?.let { goal -> if (goal.isNotBlank()) brand.goal = goal }
+            it.showcaseImgs?.let { showcaseImgs -> if (!showcaseImgs.isEmpty()) showcaseImgs.map { showcaseImg ->resourceService.uploadFile(showcaseImg)}}
+            it.showcaseBgColor?.let { showcaseBgColor -> if (showcaseBgColor.isNotBlank()) brand.showcaseBgColor = showcaseBgColor }
         }
 
         return brandRepository.save(brand)

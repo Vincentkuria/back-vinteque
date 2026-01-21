@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 import java.util.UUID
 
 @RestController
-@RequestMapping("/api/blogs")
+@RequestMapping("/blogs")
 class BlogController(
     private val blogService: BlogService,
     private val resourceService: ResourceService
@@ -26,7 +26,7 @@ class BlogController(
         @RequestParam(defaultValue = "createdAt") sortBy: String,
         @RequestParam(required = false) status: String?
     ): ResponseEntity<Page<Blog>> {
-        val blogs = if (status != null) {
+        val blogs = if (!status.isNullOrBlank()) {
             blogService.getBlogsByStatus(status, page, size)
         } else {
             blogService.getAllBlogs(page, size, sortBy)

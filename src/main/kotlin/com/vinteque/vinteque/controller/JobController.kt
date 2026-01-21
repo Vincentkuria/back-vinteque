@@ -1,5 +1,8 @@
 package com.vinteque.vinteque.controller
 
+import com.vinteque.vinteque.dto.JobRequestDto
+import com.vinteque.vinteque.dto.JobUpdateRequestDto
+import com.vinteque.vinteque.dto.toJob
 import com.vinteque.vinteque.model.Job
 import com.vinteque.vinteque.service.JobService
 import org.springframework.data.domain.Page
@@ -9,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 import java.util.UUID
 
 @RestController
-@RequestMapping("/api/jobs")
+@RequestMapping("/jobs")
 class JobController(
     private val jobService: JobService
 ) {
@@ -70,17 +73,16 @@ class JobController(
     }
 
     @PostMapping
-    fun createJob(@RequestBody job: Job): ResponseEntity<Job> {
-        val createdJob = jobService.createJob(job)
+    fun createJob(@RequestBody jobRequestDto: JobRequestDto): ResponseEntity<Job> {
+        val createdJob = jobService.createJob(jobRequestDto.toJob())
         return ResponseEntity.status(HttpStatus.CREATED).body(createdJob)
     }
 
     @PutMapping("/{id}")
     fun updateJob(
-        @PathVariable id: UUID,
-        @RequestBody job: Job
+       @RequestBody jobUpdateRequestDto: JobUpdateRequestDto
     ): ResponseEntity<Job> {
-        val updatedJob = jobService.updateJob(id, job)
+        val updatedJob = jobService.updateJob(jobUpdateRequestDto)
         return ResponseEntity.ok(updatedJob)
     }
 

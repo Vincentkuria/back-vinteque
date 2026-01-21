@@ -5,7 +5,7 @@ import com.vinteque.vinteque.model.Job
 import org.springframework.web.multipart.MultipartFile
 
 data class ApplicantRequestDto (
-    var status: String?,
+    var status: String?="new",
 
     var job: Job,
 
