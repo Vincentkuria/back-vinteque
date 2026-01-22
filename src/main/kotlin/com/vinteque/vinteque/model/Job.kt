@@ -1,5 +1,6 @@
 package com.vinteque.vinteque.model
 
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import jakarta.persistence.*
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -36,6 +37,7 @@ data class Job(
     var updatedAt: LocalDateTime? = LocalDateTime.now(),
 
     @OneToMany(mappedBy = "job", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JsonManagedReference
     var applicants: MutableList<Applicant>? = mutableListOf()
 ) {
     @PreUpdate

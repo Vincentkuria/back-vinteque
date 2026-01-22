@@ -7,8 +7,6 @@ import org.springframework.web.multipart.MultipartFile
 data class ApplicantRequestDto (
     var status: String?="new",
 
-    var job: Job,
-
     var name: String,
 
     var email: String,
@@ -21,7 +19,6 @@ data class ApplicantRequestDto (
 fun ApplicantRequestDto.toApplicant(resumeUrl: String): Applicant {
     return Applicant(
         status = status,
-        job = job,
         name = name,
         email = email,
         phone = phone,

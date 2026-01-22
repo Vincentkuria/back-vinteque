@@ -1,5 +1,6 @@
 package com.vinteque.vinteque.model
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import com.vinteque.vinteque.service.ResourceService
 import jakarta.persistence.*
 import java.time.LocalDateTime
@@ -16,8 +17,9 @@ data class Applicant(
     var status: String? = "new",
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "job_id", nullable = false)
-    var job: Job,
+    @JoinColumn(name = "job_id")
+    @JsonBackReference
+    var job: Job?=null,
 
     @Column(nullable = false, length = 100)
     var name: String,

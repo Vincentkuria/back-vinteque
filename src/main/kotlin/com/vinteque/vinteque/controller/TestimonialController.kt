@@ -1,6 +1,10 @@
 package com.vinteque.vinteque.controller
 
+import com.vinteque.vinteque.dto.TestimonialRequestDto
+import com.vinteque.vinteque.dto.TestimonialUpdateRequestDto
+import com.vinteque.vinteque.dto.toTestimonial
 import com.vinteque.vinteque.model.Testimonial
+import com.vinteque.vinteque.service.ResourceService
 import com.vinteque.vinteque.service.TestimonialService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -9,7 +13,8 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/testimonials")
 class TestimonialController(
-    private val testimonialService: TestimonialService
+    private val testimonialService: TestimonialService,
+    private val resourceService: ResourceService
 ) {
     
     @GetMapping
@@ -25,17 +30,17 @@ class TestimonialController(
     }
     
     @PostMapping
-    fun createTestimonial(@RequestBody testimonial: Testimonial): ResponseEntity<Testimonial> {
-        val createdTestimonial = testimonialService.createTestimonial(testimonial)
+    fun createTestimonial(@ModelAttribute testimonialRequestDto: TestimonialRequestDto): ResponseEntity<Testimonial> {
+        val profilePicUrl= resourceService.uploadFile(testimonialRequestDto.profilePic)
+        val createdTestimonial = testimonialService.createTestimonial(testimonialRequestDto.toTestimonial(profilePicUrl))
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTestimonial)
     }
     
     @PutMapping("/{id}")
     fun updateTestimonial(
-        @PathVariable id: Long,
-        @RequestBody testimonial: Testimonial
+        @ModelAttribute testimonialUpdateRequestDto: TestimonialUpdateRequestDto
     ): ResponseEntity<Testimonial> {
-        val updatedTestimonial = testimonialService.updateTestimonial(id, testimonial)
+        val updatedTestimonial = testimonialService.updateTestimonial(testimonialUpdateRequestDto)
         return ResponseEntity.ok(updatedTestimonial)
     }
     
