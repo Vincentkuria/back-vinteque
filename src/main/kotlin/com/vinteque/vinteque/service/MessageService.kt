@@ -11,7 +11,8 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class MessageService(
-    private val messageRepository: MessageRepository
+    private val messageRepository: MessageRepository,
+    private val sseService: SseService
 ) {
 
     fun getAllMessages(page: Int = 0, size: Int = 10, sortBy: String = "createdAt"): Page<Message> {
@@ -26,6 +27,14 @@ class MessageService(
 
     fun getUnreadMessages(page: Int = 0, size: Int = 10): Page<Message> {
         return getMessagesByStatus("unread", page, size)
+    }
+
+    fun getUnreadCount(): Long {
+        return messageRepository.countByStatus("unread")
+    }
+
+    fun getReadMessages(page: Int = 0, size: Int = 10): Page<Message> {
+        return getMessagesByStatus("read", page, size)
     }
 
     fun searchMessagesByEmail(email: String, page: Int = 0, size: Int = 10): Page<Message> {
@@ -45,7 +54,9 @@ class MessageService(
 
     @Transactional
     fun createMessage(message: Message): Message {
-        return messageRepository.save(message)
+        val savedMessage = messageRepository.save(message)
+        sseService.send(savedMessage)
+        return savedMessage
     }
 
     @Transactional

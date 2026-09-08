@@ -3,6 +3,8 @@ package com.vinteque.vinteque.model
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
+
+
 @Entity
 @Table(name = "messages")
 data class Message(
@@ -24,6 +26,10 @@ data class Message(
 
     @Column(nullable = false, length = 20)
     var status: String? = "unread",
+
+//TODO
+//    @Column("deleted_at")
+//    var deletedAt: LocalDateTime? = null,
 
     @Column(name = "created_at", nullable = false, updatable = false)
     val createdAt: LocalDateTime? = LocalDateTime.now(),

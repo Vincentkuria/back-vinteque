@@ -5,13 +5,17 @@ CREATE TABLE messages (
     email VARCHAR(255) NOT NULL,
     phone VARCHAR(20),
     message TEXT NOT NULL,
-    status VARCHAR(20) CHECK (status IN ('unread', 'read', 'replied', 'archived')) NOT NULL DEFAULT 'unread',
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    status VARCHAR(20) CHECK (status IN ('unread', 'read')) NOT NULL DEFAULT 'unread',
+    deleted_at TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Index on status for faster filtering
 CREATE INDEX idx_messages_status ON messages(status);
+
+--Index on deleted_at
+CREATE INDEX idx_messages_deleted_at ON messages(deleted_at);
 
 -- Index on created_at for sorting by date
 CREATE INDEX idx_messages_created_at ON messages(created_at DESC);
@@ -69,42 +73,6 @@ $$ language 'plpgsql';
 
 CREATE TRIGGER update_softwares_updated_at BEFORE UPDATE ON softwares
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-
-
-
--- Brands --
-CREATE TABLE brands (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    status VARCHAR(20) CHECK (status IN ('published', 'draft', 'archived')) NOT NULL DEFAULT 'draft',
-    display_img VARCHAR(500),
-    company_name VARCHAR(150) NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    bg_color VARCHAR(7),
-    location VARCHAR(200),
-    hero_img VARCHAR(500),
-    about_client TEXT,
-    goal TEXT,
-    showcase_imgs TEXT[],
-    showcase_bg_color VARCHAR(7),
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
--- Index on status for faster filtering
-CREATE INDEX idx_brands_status ON brands(status);
-
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-    RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
-
-CREATE TRIGGER update_brands_updated_at BEFORE UPDATE ON brands
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
 
 
 -- Testimonials --

@@ -2,16 +2,24 @@ package com.vinteque.vinteque.controller
 
 import com.vinteque.vinteque.model.Message
 import com.vinteque.vinteque.service.MessageService
+import com.vinteque.vinteque.service.SseService
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 
 @RestController
 @RequestMapping("/messages")
 class MessageController(
-    private val messageService: MessageService
+    private val messageService: MessageService,
+    private val sseService: SseService
 ) {
+    @GetMapping("/sse", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
+    fun messageSseConnect(): SseEmitter{
+        return sseService.connect()
+    }
 
     @GetMapping
     fun getAllMessages(
@@ -34,6 +42,21 @@ class MessageController(
         @RequestParam(defaultValue = "10") size: Int
     ): ResponseEntity<Page<Message>> {
         val messages = messageService.getUnreadMessages(page, size)
+        return ResponseEntity.ok(messages)
+    }
+
+    @GetMapping("/unread-count")
+    fun getUnreadCount(): ResponseEntity<Map<String, Long>> {
+        val count=messageService.getUnreadCount()
+        return ResponseEntity.ok(mapOf("count" to count))
+    }
+
+    @GetMapping("/read")
+    fun getReadMessages(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): ResponseEntity<Page<Message>> {
+        val messages = messageService.getReadMessages(page, size)
         return ResponseEntity.ok(messages)
     }
 
