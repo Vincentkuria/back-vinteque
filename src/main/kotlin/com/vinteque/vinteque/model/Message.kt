@@ -1,12 +1,16 @@
 package com.vinteque.vinteque.model
 
 import jakarta.persistence.*
+import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.SQLRestriction
 import java.time.LocalDateTime
 
 
 
 @Entity
 @Table(name = "messages")
+@SQLDelete(sql = "UPDATE messages SET deleted_at = NOW() WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
 data class Message(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,9 +31,8 @@ data class Message(
     @Column(nullable = false, length = 20)
     var status: String? = "unread",
 
-//TODO
-//    @Column("deleted_at")
-//    var deletedAt: LocalDateTime? = null,
+    @Column("deleted_at", nullable = true)
+    var deletedAt: LocalDateTime? = null,
 
     @Column(name = "created_at", nullable = false, updatable = false)
     val createdAt: LocalDateTime? = LocalDateTime.now(),

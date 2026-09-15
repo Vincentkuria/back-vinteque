@@ -102,18 +102,6 @@ class MessageController(
         return ResponseEntity.ok(message)
     }
 
-    @PatchMapping("/{id}/replied")
-    fun markAsReplied(@PathVariable id: Long): ResponseEntity<Message> {
-        val message = messageService.markAsReplied(id)
-        return ResponseEntity.ok(message)
-    }
-
-    @PatchMapping("/{id}/archive")
-    fun archiveMessage(@PathVariable id: Long): ResponseEntity<Message> {
-        val message = messageService.archiveMessage(id)
-        return ResponseEntity.ok(message)
-    }
-
     @DeleteMapping("/{id}")
     fun deleteMessage(@PathVariable id: Long): ResponseEntity<Void> {
         messageService.deleteMessage(id)
@@ -124,12 +112,6 @@ class MessageController(
     @PatchMapping("/bulk/read")
     fun markMultipleAsRead(@RequestBody request: BulkOperationRequest): ResponseEntity<List<Message>> {
         val messages = messageService.markMultipleAsRead(request.ids)
-        return ResponseEntity.ok(messages)
-    }
-
-    @PatchMapping("/bulk/archive")
-    fun archiveMultiple(@RequestBody request: BulkOperationRequest): ResponseEntity<List<Message>> {
-        val messages = messageService.archiveMultiple(request.ids)
         return ResponseEntity.ok(messages)
     }
 }

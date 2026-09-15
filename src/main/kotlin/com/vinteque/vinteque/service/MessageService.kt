@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 class MessageService(
@@ -72,16 +73,6 @@ class MessageService(
     }
 
     @Transactional
-    fun markAsReplied(id: Long): Message {
-        return updateMessageStatus(id, "replied")
-    }
-
-    @Transactional
-    fun archiveMessage(id: Long): Message {
-        return updateMessageStatus(id, "archived")
-    }
-
-    @Transactional
     fun deleteMessage(id: Long) {
         messageRepository.deleteById(id)
     }
@@ -92,8 +83,4 @@ class MessageService(
         return ids.map { markAsRead(it) }
     }
 
-    @Transactional
-    fun archiveMultiple(ids: List<Long>): List<Message> {
-        return ids.map { archiveMessage(it) }
-    }
 }
