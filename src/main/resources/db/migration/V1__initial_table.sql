@@ -1,3 +1,12 @@
+-- Universal trigger to auto-update updated_at
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+    RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
 -- Messages --
 CREATE TABLE messages (
     id SERIAL PRIMARY KEY,
@@ -19,15 +28,6 @@ CREATE INDEX idx_messages_deleted_at ON messages(deleted_at);
 
 -- Index on created_at for sorting by date
 CREATE INDEX idx_messages_created_at ON messages(created_at DESC);
-
--- Trigger to auto-update updated_at
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-    RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
 
 CREATE TRIGGER update_messages_updated_at BEFORE UPDATE ON messages
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
@@ -63,14 +63,6 @@ CREATE TABLE softwares (
 -- Index on status for faster filtering
 CREATE INDEX idx_softwares_status ON softwares(status);
 
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-    RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
-
 CREATE TRIGGER update_softwares_updated_at BEFORE UPDATE ON softwares
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
@@ -99,15 +91,6 @@ CREATE TABLE blogs (
 
 -- Optional: Create an index on status for faster filtering
 CREATE INDEX idx_blogs_status ON blogs(status);
-
--- Optional: Trigger to auto-update updated_at
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-    RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
 
 CREATE TRIGGER update_blogs_updated_at BEFORE UPDATE ON blogs
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
@@ -153,18 +136,48 @@ CREATE INDEX idx_applicants_status ON applicants(status);
 CREATE INDEX idx_applicants_job_id ON applicants(job_id);
 CREATE INDEX idx_applicants_created_at ON applicants(created_at DESC);
 
--- Trigger function (create once if not exists)
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-    RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
-
 -- Triggers for auto-update updated_at
 CREATE TRIGGER update_jobs_updated_at BEFORE UPDATE ON jobs
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_applicants_updated_at BEFORE UPDATE ON applicants
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+
+
+-- Enum types
+CREATE TYPE funnel_type AS ENUM ('INBOUND', 'OUTBOUND', 'INOUTBOUND');
+CREATE TYPE lead_funnel_type AS ENUM ('INBOUND', 'OUTBOUND'); -- leads exclude INOUTBOUND
+
+-- Stages
+CREATE TABLE stages (
+    id     UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name   TEXT NOT NULL UNIQUE,   -- the UNIQUE constraint creates the index
+    funnel funnel_type NOT NULL
+);
+
+-- Leads
+CREATE TABLE leads (
+   id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+   name           TEXT NOT NULL,
+   email          TEXT,
+   phone          TEXT,
+   company        TEXT,
+   role           TEXT,
+   source         TEXT,
+   funnel         lead_funnel_type,
+   comments       JSONB NOT NULL DEFAULT '[]'::jsonb,
+   current_stage  TEXT NOT NULL
+       REFERENCES stages (name)
+           ON UPDATE CASCADE
+           ON DELETE RESTRICT,
+   date_added     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+   last_contacted TIMESTAMPTZ,
+   updated_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_leads_current_stage ON leads (current_stage);
+
+-- Trigger: updated_at is refreshed on every update
+CREATE TRIGGER trg_leads_updated_at BEFORE UPDATE ON leads
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
