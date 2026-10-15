@@ -4,18 +4,13 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/vintequedb
-    username: postgres
-    password: mysecretpassword
+    username: vini
+    password: dbsecret
 
   servlet:
     multipart:
       max-file-size: 5MB
       max-request-size: 100MB
-
-  flyway:
-    validate-on-migrate: false
-#    repair: true
-
 
 server:
 #  address: 0.0.0.0

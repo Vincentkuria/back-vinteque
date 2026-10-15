@@ -4,10 +4,10 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "testimonials")
-data class Testimonial(
+class Testimonial(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    var id: Long? = null,
 
     @Column(nullable = false, length = 100)
     var name: String,

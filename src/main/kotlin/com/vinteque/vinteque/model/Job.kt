@@ -2,16 +2,19 @@ package com.vinteque.vinteque.model
 
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import jakarta.persistence.*
+import org.hibernate.annotations.Generated
+import org.hibernate.generator.EventType
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
 @Entity
 @Table(name = "jobs")
-data class Job(
+class Job(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    val id: UUID? = null,
+    var id: UUID? = null,
 
     @Column(nullable = false, length = 20)
     var status: String? = "draft",
@@ -31,10 +34,11 @@ data class Job(
     var deadline: LocalDate? = null,
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    val createdAt: LocalDateTime? = LocalDateTime.now(),
+    var createdAt: Instant? = Instant.now(),
 
-    @Column(name = "updated_at", nullable = false)
-    var updatedAt: LocalDateTime? = LocalDateTime.now(),
+    @Generated(event = [EventType.INSERT, EventType.UPDATE])
+    @Column(name = "updated_at", nullable = false, updatable = false, insertable = false)
+    var updatedAt: Instant?,
 
     @OneToMany(mappedBy = "job", cascade = [CascadeType.ALL], orphanRemoval = true)
     @JsonManagedReference
@@ -42,6 +46,6 @@ data class Job(
 ) {
     @PreUpdate
     fun preUpdate() {
-        updatedAt = LocalDateTime.now()
+        updatedAt = Instant.now()
     }
 }

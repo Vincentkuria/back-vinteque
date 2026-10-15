@@ -1,8 +1,11 @@
 package com.vinteque.vinteque.model
 
 import jakarta.persistence.*
+import org.hibernate.annotations.Generated
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
+import org.hibernate.generator.EventType
+import java.time.Instant
 import java.time.LocalDateTime
 
 
@@ -11,10 +14,10 @@ import java.time.LocalDateTime
 @Table(name = "messages")
 @SQLDelete(sql = "UPDATE messages SET deleted_at = NOW() WHERE id = ?")
 @SQLRestriction("deleted_at IS NULL")
-data class Message(
+class Message(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    var id: Long? = null,
 
     @Column(nullable = false, length = 100)
     var name: String,
@@ -32,16 +35,12 @@ data class Message(
     var status: String? = "unread",
 
     @Column("deleted_at", nullable = true)
-    var deletedAt: LocalDateTime? = null,
+    var deletedAt: Instant? = null,
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    val createdAt: LocalDateTime? = LocalDateTime.now(),
+    var createdAt: Instant? = Instant.now(),
 
-    @Column(name = "updated_at", nullable = false)
-    var updatedAt: LocalDateTime? = LocalDateTime.now()
-) {
-    @PreUpdate
-    fun preUpdate() {
-        updatedAt = LocalDateTime.now()
-    }
-}
+    @Generated(event = [EventType.INSERT, EventType.UPDATE])
+    @Column(name = "updated_at", nullable = false, insertable = false, updatable = false)
+    var updatedAt: Instant?
+)

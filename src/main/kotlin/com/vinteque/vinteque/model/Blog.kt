@@ -2,15 +2,18 @@ package com.vinteque.vinteque.model
 
 import com.vinteque.vinteque.service.ResourceService
 import jakarta.persistence.*
+import org.hibernate.annotations.Generated
+import org.hibernate.generator.EventType
+import java.time.Instant
 import java.time.LocalDateTime
 import java.util.UUID
 
 @Entity
 @Table(name = "blogs")
-data class Blog(
+class Blog(
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    val id: UUID? = null,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: UUID? = null,
 
     @Column(nullable = false, length = 20)
     var status: String? = "draft",
@@ -25,16 +28,12 @@ data class Blog(
     var body: String,
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    val createdAt: LocalDateTime? = LocalDateTime.now(),
+    var createdAt: Instant? = Instant.now(),
 
-    @Column(name = "updated_at", nullable = false)
-    var updatedAt: LocalDateTime? = LocalDateTime.now()
+    @Generated(event=[EventType.INSERT, EventType.UPDATE])
+    @Column(name = "updated_at", nullable = false, updatable = false, insertable = false)
+    var updatedAt: Instant?
 ) {
-    @PreUpdate
-    fun preUpdate() {
-        updatedAt = LocalDateTime.now()
-    }
-
     @PreRemove
     fun preRemove() {
         val resourceService= ResourceService()
