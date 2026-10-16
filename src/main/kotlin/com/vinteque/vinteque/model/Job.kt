@@ -37,8 +37,8 @@ class Job(
     var createdAt: Instant? = Instant.now(),
 
     @Generated(event = [EventType.INSERT, EventType.UPDATE])
-    @Column(name = "updated_at", nullable = false, updatable = false, insertable = false)
-    var updatedAt: Instant?,
+    @Column(name = "updated_at", nullable = false , updatable = false, insertable = false)
+    var updatedAt: Instant?=null,
 
     @OneToMany(mappedBy = "job", cascade = [CascadeType.ALL], orphanRemoval = true)
     @JsonManagedReference

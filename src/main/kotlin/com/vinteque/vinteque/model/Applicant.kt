@@ -3,6 +3,8 @@ package com.vinteque.vinteque.model
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.vinteque.vinteque.service.ResourceService
 import jakarta.persistence.*
+import org.hibernate.annotations.Generated
+import org.hibernate.generator.EventType
 import java.time.Instant
 import java.util.UUID
 
@@ -36,14 +38,10 @@ class Applicant(
     @Column(name = "created_at", nullable = false, updatable = false)
     var createdAt: Instant? = Instant.now(),
 
-    @Column(name = "updated_at", nullable = false)
-    var updatedAt: Instant? = Instant.now()
+    @Generated(event = [EventType.INSERT, EventType.UPDATE])
+    @Column(name = "updated_at", nullable = false, insertable = false, updatable = false)
+    var updatedAt: Instant?=null
 ) {
-    @PreUpdate
-    fun preUpdate() {
-        updatedAt = Instant.now()
-    }
-
     @PreRemove
     fun preRemove(){
         val resourceService= ResourceService()

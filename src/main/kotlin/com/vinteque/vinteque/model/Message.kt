@@ -42,5 +42,5 @@ class Message(
 
     @Generated(event = [EventType.INSERT, EventType.UPDATE])
     @Column(name = "updated_at", nullable = false, insertable = false, updatable = false)
-    var updatedAt: Instant?
+    var updatedAt: Instant?= null
 )
